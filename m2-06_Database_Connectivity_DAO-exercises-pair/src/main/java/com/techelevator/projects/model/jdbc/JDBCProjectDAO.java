@@ -19,22 +19,6 @@ public class JDBCProjectDAO implements ProjectDAO {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
-	@Override
-	public List<Project> getAllActiveProjects() {
-		List<Project> projects = new ArrayList<Project>();
-		
-		String selectSql = "SELECT project_id, name, from_date, to_date " + 
-				"FROM project";
-		
-		SqlRowSet results =  jdbcTemplate.queryForRowSet(selectSql);
-		
-		while (results.next()) {
-			Project p = mapRowToProject(results);
-				projects.add(p);
-			}
-			return projects;
-	}
-
 	private Project mapRowToProject(SqlRowSet results) {
 		Project project = new Project();
 		project.setId(results.getLong("project_id"));
@@ -53,19 +37,37 @@ public class JDBCProjectDAO implements ProjectDAO {
 	}
 	
 	@Override
-	public void removeEmployeeFromProject(Long projectId, Long employeeId) {
+	public List<Project> getAllActiveProjects() {
+		List<Project> projects = new ArrayList<Project>();
 		
+		String selectSql = "SELECT project_id, name, from_date, to_date " + 
+				"FROM project";
+		
+		SqlRowSet results =  jdbcTemplate.queryForRowSet(selectSql);
+		
+		while (results.next()) {
+			Project p = mapRowToProject(results);
+				projects.add(p);
+			}
+			return projects;
+	}
+	
+	@Override
+	public void removeEmployeeFromProject(Long projectId, Long employeeId) {
+		String deleteSql = "DELETE FROM project_employee "
+				+ "WHERE employee_id = ? "
+				+ "AND project_id = ?";
+		
+		jdbcTemplate.update(deleteSql, employeeId, projectId);
 	}
 
 	@Override
 	public void addEmployeeToProject(Long projectId, Long employeeId) {
-		String insertSql = "UPDATE project_employee "
-				+ "SET project_id = ? " 
-				+ "WHERE employee_id = ?";
+		String insertSql = "INSERT INTO project_employee (project_id, employee_id) "
+				+ "VALUES (?, ?) RETURNING project_id, employee_id";
 		
-		jdbcTemplate.update(insertSql, projectId, employeeId);
+		jdbcTemplate.queryForRowSet(insertSql, projectId, employeeId);
 
-		
 	}
 
 }

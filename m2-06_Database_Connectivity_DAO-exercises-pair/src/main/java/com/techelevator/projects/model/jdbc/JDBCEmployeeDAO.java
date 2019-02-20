@@ -115,7 +115,7 @@ public class JDBCEmployeeDAO implements EmployeeDAO {
 				+ "FROM employee LEFT JOIN project ON employee.employee_id = project.project_id "
 				+ "WHERE project.project_id IS NOT NULL";
 		
-		SqlRowSet results =  jdbcTemplate.queryForRowSet(selectSql, projectId);
+		SqlRowSet results =  jdbcTemplate.queryForRowSet(selectSql);
 		
 		while (results.next()) {
 			Employee p = mapRowToEmployee(results);
@@ -127,10 +127,10 @@ public class JDBCEmployeeDAO implements EmployeeDAO {
 
 	@Override
 	public void changeEmployeeDepartment(Long employeeId, Long departmentId) {
-		String insertSql = "UPDATE employee SET department_id = ? " 
+		String updateSql = "UPDATE employee SET department_id = ? " 
 				+ "WHERE employee_id = ?";
 
-		jdbcTemplate.update(insertSql, departmentId, employeeId);
+		jdbcTemplate.update(updateSql, departmentId, employeeId);
 	}
 
 }

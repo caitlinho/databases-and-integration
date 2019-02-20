@@ -50,8 +50,9 @@ public class JDBCDepartmentDAO implements DepartmentDAO {
 	public List<Department> searchDepartmentsByName(String nameSearch) {
 		List<Department> department = new ArrayList<Department>();
 		
-		String selectSql = "SELECT department_id, name " + 
-				"FROM department " + "WHERE name LIKE ('%' || ? || '%')";
+		String selectSql = "SELECT department_id, name "  
+				+ "FROM department " 
+				+ "WHERE name LIKE ('%' || ? || '%')";
 		
 		SqlRowSet results =  jdbcTemplate.queryForRowSet(selectSql, nameSearch);
 		
@@ -88,9 +89,10 @@ public class JDBCDepartmentDAO implements DepartmentDAO {
 	public Department getDepartmentById(Long id) {
 
 		String selectSql = "SELECT department_id, name " + 
-				"FROM department " + "WHERE department id = ?";
+				"FROM department " + "WHERE department_id = ?";
 		
 		SqlRowSet results =  jdbcTemplate.queryForRowSet(selectSql, id);
+		results.next();
 		
 		Department departmentId = mapRowToDepartment(results);
 		
