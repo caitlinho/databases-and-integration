@@ -94,7 +94,7 @@ public class JDBCDepartmentDAOIntegrationTest {
 
 	}
 				
-	@Test
+	@Test 
 	public void create_new_department_and_read_it_back() {
 		Department testCreateDepartment = getDepartment(0L, "AAA");
 		dao.createDepartment(testCreateDepartment);

@@ -69,20 +69,20 @@ public class JDBCProjectDAOIntegrationTest {
 	}
 	
 	@Test
-	public void removes_an_employee_from_project() {
+	public void adds_and_removes_an_employee_from_project() {
 		List<Employee> employees = daoemp.getEmployeesByProjectId(1L);
 		int count = employees.size();
 		dao.addEmployeeToProject(1L, TEST_EMPLOYEE);
 		employees = daoemp.getEmployeesByProjectId(1L);
 		
 		assertEquals(count + 1, employees.size());
+		
+		dao.removeEmployeeFromProject(1L, TEST_EMPLOYEE);
+		employees = daoemp.getEmployeesByProjectId(1L);
+		assertEquals(count, employees.size());
 	}
 	
-	@Test
-	public void add_an_employee_to_project() {
-		
-		
-	}
+	
 	
 
 	

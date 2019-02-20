@@ -110,12 +110,12 @@ public class JDBCEmployeeDAO implements EmployeeDAO {
 	public List<Employee> getEmployeesByProjectId(Long projectId) {
 		List<Employee> employees = new ArrayList<Employee>();
 		
-		String selectSql = "SELECT employee_id, department_id, first_name, last_name, birth_date, "  
-				+ "gender, hire_date "
-				+ "FROM employee LEFT JOIN project ON employee.employee_id = project.project_id "
-				+ "WHERE project.project_id IS NOT NULL";
+		String selectSql = "SELECT employee.employee_id, employee.department_id, employee.first_name, employee.last_name, employee.birth_date, "  
+				+ "employee.gender, employee.hire_date "
+				+ "FROM employee LEFT JOIN project_employee ON employee.employee_id = project_employee.project_id "
+				+ "WHERE project_employee.project_id = ?";
 		
-		SqlRowSet results =  jdbcTemplate.queryForRowSet(selectSql);
+		SqlRowSet results =  jdbcTemplate.queryForRowSet(selectSql, projectId);
 		
 		while (results.next()) {
 			Employee p = mapRowToEmployee(results);
