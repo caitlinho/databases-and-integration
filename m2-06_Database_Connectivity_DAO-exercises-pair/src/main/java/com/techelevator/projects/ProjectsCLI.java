@@ -323,7 +323,7 @@ public class ProjectsCLI {
 	}
 
 	private void displayApplicationBanner() {
-		System.out.println(" ______                 _                         _____           _           _     _____  ____");
+		System.out.println(" ______                 _                         _____            _           _     _____  ____");
 		System.out.println("|  ____|               | |                       |  __ \\         (_)         | |   |  __ \\|  _ \\");
 		System.out.println("| |__   _ __ ___  _ __ | | ___  _   _  ___  ___  | |__) | __ ___  _  ___  ___| |_  | |  | | |_) |");
 		System.out.println("|  __| | '_ ` _ \\| '_ \\| |/ _ \\| | | |/ _ \\/ _ \\ |  ___/ '__/ _ \\| |/ _ \\/ __| __| | |  | |  _ <");
