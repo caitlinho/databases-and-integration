@@ -1,5 +1,9 @@
 package com.techelevator.campground.model.jdbc;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +23,27 @@ public class JDBCSiteDAO implements SiteDAO {
 
 	}
 	
+	@Override
+	public List<Site> getTop5AvailableSitesByDate(LocalDate fromDate, LocalDate toDate) {
+		
+		List<Site> top5AvailableSites = new ArrayList<Site>();
+		
+		String top5SitesSql = "SELECT DISTINCT (*) FROM site \n " 
+				+ "JOIN campground ON site.campground_id = campground.campground_id\n "  
+				+ "WHERE site.campground_id = 2 AND site_id NOT IN (SELECT site.site_id FROM site\n " 
+				+ "JOIN reservation ON reservation.site_id = site.site_id\n " 
+				+ "WHERE ? > reservation.from_date AND ? < reservation.to_date)\n " 
+				+ "ORDER BY daily_fee\n " 
+				+ "LIMIT 5";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(top5SitesSql, fromDate, toDate);
+		
+		while(results.next()) {
+			Site site = mapRowToSite(results);
+			top5AvailableSites.add(site);
+		}
+		return top5AvailableSites;
+	}
 	
 	
 	
@@ -30,8 +55,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		site.setMaxOccupancy(results.getInt("max_occupancy"));
 		site.setAccessible(results.getBoolean("accessible"));
 		site.setMaxRVLength(results.getInt("max_rv_length"));
-		site.setUtilities(results.getBoolean("utilies"));
+		site.setUtilities(results.getBoolean("utilities"));
 		return site;
-	}
-
+	}	
 }

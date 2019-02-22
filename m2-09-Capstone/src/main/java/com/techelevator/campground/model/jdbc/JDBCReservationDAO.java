@@ -1,5 +1,6 @@
 package com.techelevator.campground.model.jdbc;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -19,27 +20,29 @@ public class JDBCReservationDAO implements ReservationDAO {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 
 	}
-
-	
 	
 	@Override
-	public List<Reservation> getAvailableCampgroundReservation() {
-		// TODO Auto-generated method stub
-		return null;
+	public Long addReservation(Reservation reservation) {
+		String returnIdSql = "INSERT INTO reservation (site_id, name, from_date, to_date, create_date) "  
+				+ "VALUES (?, ?, ?, ?, ?) " 
+				+ "RETURNING reservation_id"; 
+		
+		Long returnReservationId = jdbcTemplate.queryForObject(returnIdSql, Long.class, 
+				reservation.getSiteId(),
+				reservation.getName(),
+				reservation.getFromDate(),
+				reservation.getToDate(),
+				reservation.getCreateDate());
+		return returnReservationId;
 	}
+	
 
 	@Override
-	public Long returningConfirmationId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Reservation getReservationId(Long reservationId) {
-		Reservation reservation = new Reservation();
-
+	public Reservation getActiveReservation(Long reservationId) {
+		
 		String sqlReservation = "SELECT reservation_id, site_id, name, from_date, to_date, create_date "
-				+ "FROM reservation " + "WHERE reservation_id = ?";
+				+ "FROM reservation " 
+				+ "WHERE reservation_id = ?";
 
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlReservation, reservationId);
 
@@ -70,6 +73,5 @@ public class JDBCReservationDAO implements ReservationDAO {
 		reservation.setCreateDate(results.getDate("create_date").toLocalDate());
 		return reservation;
 	}
-	
 	
 }

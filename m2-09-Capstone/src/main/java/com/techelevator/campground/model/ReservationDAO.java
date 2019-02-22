@@ -1,21 +1,19 @@
 package com.techelevator.campground.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ReservationDAO {
-
-	// Displays available campgrounds
-	public List<Reservation> getAvailableCampgroundReservation();
-	
-	// Add to future site class 
-//	// Displays available results of requested date range
-//	public List<Reservation> searchForUserRequestedInfo();
 	
 	// Returns confirmation id to user 
-	public Long returningConfirmationId();
+	public Long addReservation(Reservation reservation);
 	
-	public Reservation getReservationId(Long reservationId);
+	//Shows Active Reservations
+	public Reservation getActiveReservation(Long reservationId);
 	
+	//Cancels Reservation and deletes form db
 	public void cancelReservation(Long reservationId);
+
+	
 	
 }

@@ -8,11 +8,15 @@ import static org.junit.Assert.assertNull;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import javax.naming.spi.DirStateFactory.Result;
+import javax.xml.bind.ParseConversionEvent;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
@@ -23,9 +27,15 @@ import com.techelevator.campground.model.jdbc.JDBCReservationDAO;
 public class JDBCReservationDAOIntegrationTest {
 	
 	private Long insertedReservationId;
+	private Long testSiteId = 1L;
+	private String testName = "testName";
+	private LocalDate fromDateTest = LocalDate.parse("2019-01-21");
+	private LocalDate toDateTest = LocalDate.parse("2019-01-25");
+	private LocalDate createDateTest = LocalDate.parse("2019-01-18");
 	private static SingleConnectionDataSource dataSource;
 	private JDBCReservationDAO dao;
 	private JdbcTemplate jdbcTemplate;
+	
 	
 	@BeforeClass
 	public static void createDataSource() {
@@ -47,10 +57,11 @@ public class JDBCReservationDAOIntegrationTest {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		clearReservationTable();
 		String createReservationSql = "INSERT INTO reservation (site_id, name, from_date, to_date, create_date) "
-				+ "VALUES (1, 'testName', '2019-01-21', '2019-01-25', '2019-01-18') "
+				+ "VALUES (?, ?, ?, ?, ?) "
 				+ "RETURNING reservation_id";
 		
-		insertedReservationId = jdbcTemplate.queryForObject(createReservationSql, Long.class);
+		insertedReservationId = jdbcTemplate.queryForObject(createReservationSql, Long.class, testSiteId, 
+				testName, fromDateTest, toDateTest, createDateTest);
 	}
 
 	@After
@@ -58,20 +69,28 @@ public class JDBCReservationDAOIntegrationTest {
 		dataSource.getConnection().rollback();
 	}
 	
+	@Test
+	public void adds_reservation() {
+		Reservation testReservation = getReservation();
+		
+		Long confirmationId = dao.addReservation(testReservation);
+		assertNotNull(confirmationId);
+		Reservation retrievedReservation = dao.getActiveReservation(confirmationId);
+		assertReservationsAreEqual(testReservation, retrievedReservation);
+	}
 	
-	// Ask why these two objects pass as not equals -- ie, they are no longer the same item in the stack?
 	@Test
 	public void reservation_test_getting_by_id_then_canceled() {
 		
-		Reservation compareReservation = getReservation(insertedReservationId, 1L, "testName", LocalDate.parse("2019-01-21"), LocalDate.parse("2019-01-25"), LocalDate.parse("2019-01-18"));
-		Reservation reservation = dao.getReservationId(insertedReservationId);
+		Reservation compareReservation = getReservation();
+		Reservation reservation = dao.getActiveReservation(insertedReservationId);
 		
 		assertNotNull(reservation);
-		assertEquals(compareReservation, reservation);
+		assertReservationsAreEqual(compareReservation, reservation);
 		
 		dao.cancelReservation(insertedReservationId);
 		
-		assertNotEquals(insertedReservationId, reservation);
+		assertNull(null, dao.getActiveReservation(insertedReservationId));
 
 	}
 	
@@ -80,15 +99,25 @@ public class JDBCReservationDAOIntegrationTest {
 		jdbcTemplate.update(truncateReservationTableSql);
 	}
 	
-	private Reservation getReservation(Long reservationId, Long siteId, String name, LocalDate fromDate, LocalDate toDate, LocalDate createDate) {
+	private Reservation getReservation() {
 		Reservation testReservation = new Reservation();
-		testReservation.setReservationId(reservationId);
-		testReservation.setName(name);
-		testReservation.setSiteId(siteId);
-		testReservation.setFromDate(fromDate);
-		testReservation.setToDate(toDate);
-		testReservation.setCreateDate(createDate);
+		
+		testReservation.setName(testName);
+		testReservation.setSiteId(testSiteId);
+		testReservation.setFromDate(fromDateTest);
+		testReservation.setToDate(toDateTest);
+		testReservation.setCreateDate(createDateTest);
 		return testReservation;
+	}
+	
+	private void assertReservationsAreEqual(Reservation expected, Reservation actual) {
+		
+		assertEquals(expected.getSiteId(), actual.getSiteId());
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getFromDate(), actual.getFromDate());
+		assertEquals(expected.getToDate(), actual.getToDate());
+		assertEquals(expected.getCreateDate(), actual.getCreateDate());
+		
 	}
 
 
