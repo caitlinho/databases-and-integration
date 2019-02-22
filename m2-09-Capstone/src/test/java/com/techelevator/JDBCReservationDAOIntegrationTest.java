@@ -58,6 +58,8 @@ public class JDBCReservationDAOIntegrationTest {
 		dataSource.getConnection().rollback();
 	}
 	
+	
+	// Ask why these two objects pass as not equals -- ie, they are no longer the same item in the stack?
 	@Test
 	public void reservation_test_getting_by_id_then_canceled() {
 		
