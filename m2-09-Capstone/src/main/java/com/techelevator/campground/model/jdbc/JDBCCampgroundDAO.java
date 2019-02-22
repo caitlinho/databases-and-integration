@@ -23,7 +23,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 	}
 
 	@Override
-	public List<Campground> getAllCampgrounds(String name) {
+	public List<Campground> getAllCampgrounds() {
 		
 		List<Campground> campgrounds = new ArrayList<Campground>();
 		
@@ -46,7 +46,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		campground.setName(results.getString("name"));
 		campground.setOpenFromMonth(results.getString("open_from_mm"));
 		campground.setOpenToMonth(results.getString("open_to_mm"));
-		campground.setDailyFee(results.getDouble("daily_fee"));
+		campground.setDailyFee(results.getBigDecimal("daily_fee"));
 		return campground;
 	}
 

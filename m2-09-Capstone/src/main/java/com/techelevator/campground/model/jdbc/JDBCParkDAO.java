@@ -12,33 +12,31 @@ import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
 
 public class JDBCParkDAO implements ParkDAO {
-	
-	
+
 	private JdbcTemplate jdbcTemplate;
-	
+
 	public JDBCParkDAO(DataSource dataSource) {
-		
+
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-		
+
 	}
 
 	@Override
 	public Park getParkInformation(String name) {
-				
+
 		String selectSql = "SELECT park_id, name, location, establish_date, area, visitors, description FROM park "
-				+"WHERE name = ?";
-		
+				+ "WHERE name = ?";
+
 		SqlRowSet results = jdbcTemplate.queryForRowSet(selectSql, name);
-		
+
 		if (results.next()) {
 			return mapRowToPark(results);
-				
+
 		}
-		
 		return null;
-		
+
 	}
-	
+
 	private Park mapRowToPark(SqlRowSet results) {
 		Park park = new Park();
 		park.setParkId(results.getLong("park_id"));
