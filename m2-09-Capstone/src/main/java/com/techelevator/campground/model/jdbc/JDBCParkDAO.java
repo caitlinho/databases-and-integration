@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
+import com.techelevator.campground.model.Site;
 
 public class JDBCParkDAO implements ParkDAO {
 
@@ -19,6 +20,22 @@ public class JDBCParkDAO implements ParkDAO {
 
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 
+	}
+	
+	@Override
+	public List<Park> getAllParks() {
+		List<Park> allParks = new ArrayList<Park>();
+		
+		String selectSql = "SELECT park_id, name, location, establish_date, area, visitors, description FROM park ORDER BY name";
+
+		SqlRowSet results = jdbcTemplate.queryForRowSet(selectSql);
+
+		while (results.next()) {
+			Park park = mapRowToPark(results);
+			allParks.add(park);
+		}
+		
+		return allParks;
 	}
 
 	@Override
@@ -36,6 +53,22 @@ public class JDBCParkDAO implements ParkDAO {
 		return null;
 
 	}
+	
+	@Override
+	public Park getParkByParkId(Long parkId) {
+		String sqlPark = "SELECT park_id, name, location, establish_date, area, visitors, description "
+				+ "FROM park " 
+				+ "WHERE park_id = ?";
+
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlPark, parkId);
+
+		if (results.next()) {
+			return mapRowToPark(results);
+
+		}
+		return null;
+	}
+	
 
 	private Park mapRowToPark(SqlRowSet results) {
 		Park park = new Park();
@@ -48,5 +81,9 @@ public class JDBCParkDAO implements ParkDAO {
 		park.setDescription(results.getString("description"));
 		return park;
 	}
+
+
+
+	
 
 }

@@ -72,6 +72,13 @@ public class JDBCParkDAOIntegrationTest {
 
 	}
 	
+	@Test
+	public void all_parks_listed() {
+		int count = jdbcTemplate.queryForObject("SELECT count(*) FROM park", Integer.class);
+		List<Park> results = dao.getAllParks();
+		assertEquals(count, results.size());
+	}
+	
 	private void clearParkTable() {
 		String truncateParkTableSql = "TRUNCATE park CASCADE";
 		jdbcTemplate.update(truncateParkTableSql);

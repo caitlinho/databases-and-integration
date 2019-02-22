@@ -54,7 +54,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 		return null;
 
 	}
-
+	//DELETE
 	@Override
 	public void cancelReservation(Long reservationId) {
 		String sqlCancelReservation = "DELETE FROM reservation "

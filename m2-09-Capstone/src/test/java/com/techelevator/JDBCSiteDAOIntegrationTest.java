@@ -77,31 +77,44 @@ public class JDBCSiteDAOIntegrationTest {
 	@Test
 	public void return_top_5_available_sites() {
 		clearSiteTable();
-		List <Reservation> reservations = new ArrayList<Reservation>();
 		
-		String sqlReservation = "SELECT reservation_id, site_id, name, from_date, to_date, create_date "
-				+ "FROM reservation ";
-		
-		SqlRowSet reservationResults = jdbcTemplate.queryForRowSet(sqlReservation);
-		
-		while(reservationResults.next()) {
-			Reservation r = mapRowToReservation(reservationResults);
-			reservations.add(r);
-		}	
-	
+		// Reservations that do not conflict (initial)
 		Reservation reservationOne = getReservation(testSiteId, testName, fromDateTest, toDateTest, createDateTest);
 		Reservation reservationTwo = getReservation(testSiteId, "testName2", LocalDate.parse("2019-01-25"), LocalDate.parse("2019-01-28"), LocalDate.parse("2019-01-01"));
 		Reservation reservationThree = getReservation(testSiteId, "testName3", LocalDate.parse("2019-01-28"), LocalDate.parse("2019-01-30"), LocalDate.parse("2019-01-02"));
 		Reservation reservationFour = getReservation(testSiteId, "testName4", LocalDate.parse("2019-02-01"), LocalDate.parse("2019-02-02"), LocalDate.parse("2019-01-05"));
 		Reservation reservationFive = getReservation(testSiteId, "testName5", LocalDate.parse("2019-03-01"), LocalDate.parse("2019-03-02"), LocalDate.parse("2019-01-09"));
 		Reservation reservationSix = getReservation(testSiteId, "testName6", LocalDate.parse("2019-03-05"), LocalDate.parse("2019-03-02"), LocalDate.parse("2019-01-09"));
-		
+
+		List <Reservation> reservations = new ArrayList<Reservation>();
+			reservations.add(reservationOne);
+			reservations.add(reservationTwo);
+			reservations.add(reservationThree);
+			reservations.add(reservationFour);
+			reservations.add(reservationFive);
+			reservations.add(reservationSix);
+
+		// Reservation List of dates that do conflict, add one reservation with a different site id
+			Reservation conflictingReservationOne = getReservation(testSiteId, testName, fromDateTest, toDateTest, createDateTest);
+			Reservation conflictingReservationTwo = getReservation(testSiteId, "testName2", LocalDate.parse("2019-01-25"), LocalDate.parse("2019-01-28"), LocalDate.parse("2019-01-01"));
+			Reservation conflictingReservationThree = getReservation(testSiteId, "testName3", LocalDate.parse("2019-01-28"), LocalDate.parse("2019-01-30"), LocalDate.parse("2019-01-02"));
+			Reservation conflictingReservationFour = getReservation(testSiteId, "testName4", LocalDate.parse("2019-02-01"), LocalDate.parse("2019-02-02"), LocalDate.parse("2019-01-05"));
+			Reservation conflictingReservationFive = getReservation(testSiteId, "testName5", LocalDate.parse("2019-03-01"), LocalDate.parse("2019-03-02"), LocalDate.parse("2019-01-09"));
+			Reservation conflictingReservationSix = getReservation(testSiteId, "testName6", LocalDate.parse("2019-03-05"), LocalDate.parse("2019-03-02"), LocalDate.parse("2019-01-09"));
+
+			List <Reservation> conflictingReservations = new ArrayList<Reservation>();
+				reservations.add(conflictingReservationOne);
+				reservations.add(conflictingReservationTwo);
+				reservations.add(conflictingReservationThree);
+				reservations.add(conflictingReservationFour);
+				reservations.add(conflictingReservationFive);
+				reservations.add(conflictingReservationSix);
+
 				
-		List <Site> resultsReservation = dao.getTop5AvailableSitesByDate();
-
-
+		List <Site> resultsReservation = new ArrayList<Site>();
 		
-		assertEquals(count, results.size());
+		
+		// Need to create six sites in a list that show are limited to 5
 		
 	}
 	
@@ -157,7 +170,7 @@ public class JDBCSiteDAOIntegrationTest {
 		site.setUtilities(results.getBoolean("utilities"));
 		return site;
 	}	
-}
+
 
 	private void assertSitesAreEqual(Site expected, Site actual) {
 		
