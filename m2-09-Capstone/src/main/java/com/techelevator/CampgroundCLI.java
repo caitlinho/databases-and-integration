@@ -14,7 +14,7 @@ public class CampgroundCLI {
 	private static final String CAMPGROUND_MENU_OPTION_VIEW_CAMPGROUNDS = "View Campgrounds";
 	private static final String CAMPGROUND_MENU_OPTION_VIEW_SEARCH_FOR_RESERVATION = "Search for Reservation";
 	private static final String CAMPGROUND_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN= "Return to Previous Screen";
-	private static final String[] CAMPGROUND_MENU_OPTIONS = new String[]{CAMPGROUND_MENU_OPTION_VIEW_CAMPGROUNDS,
+	private static final String[] CAMPGROUND_MENU_OPTIONS = {CAMPGROUND_MENU_OPTION_VIEW_CAMPGROUNDS,
 																		CAMPGROUND_MENU_OPTION_VIEW_SEARCH_FOR_RESERVATION,
 																		CAMPGROUND_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN};
 	private static Menu menu;
@@ -34,16 +34,18 @@ public class CampgroundCLI {
 		
 		menu.getChoiceFromMainParkMenu();
 		menu.getParkInfo();
-		
-		while(true) {
-			menu.displayingAllCampgrounds();
-			
+					
 			while(true) {
-				String choice = (String) menu.getChoiceFromCampgroundMenu(CAMPGROUND_MENU_OPTIONS);
+				String choice = String.valueOf(menu.getChoiceFromCampgroundMenu(CAMPGROUND_MENU_OPTIONS));
 				if (choice.equals(CAMPGROUND_MENU_OPTION_VIEW_CAMPGROUNDS)) {
 					menu.getCampgroundInfo();
-		
-		}
+				
+				} else if(choice.equals(CAMPGROUND_MENU_OPTION_VIEW_SEARCH_FOR_RESERVATION)) {
+					
+				} else if(choice.equals(CAMPGROUND_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN)) {
+					
+				}
+			
 	
 	}
 		
@@ -52,7 +54,7 @@ public class CampgroundCLI {
 	
 	
 	
-	}
+	
 	
 	}
 }

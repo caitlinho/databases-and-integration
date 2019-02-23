@@ -58,4 +58,10 @@ public class Campground {
 	public void setDailyFee(BigDecimal dailyFee) {
 		this.dailyFee = dailyFee;
 	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+	
 }
