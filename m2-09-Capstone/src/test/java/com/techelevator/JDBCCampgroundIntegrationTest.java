@@ -62,6 +62,11 @@ public class JDBCCampgroundIntegrationTest {
 		assertEquals(count, results.size());
 	}
 	
+	@Test
+	public void get_total_cost_of_stay() {
+		
+	}
+	
 	
 	private void clearCampgroundTable() {
 		String truncateCampgroundTableSql = "TRUNCATE Campground CASCADE";

@@ -3,6 +3,10 @@ package com.techelevator.campground.view;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,7 +27,7 @@ public class Menu {
 	private CampgroundCLI cli;
 	private Admin admin = new Admin();
 	private List<Park> parks = admin.displayAllParks();
-	private List<Campground> campgrounds = admin.displayAllCampgrounds();
+	private List<Campground> campgrounds;
 
 	public Menu(InputStream input, OutputStream output) {
 		this.out = new PrintWriter(output);
@@ -82,11 +86,12 @@ public class Menu {
 	// displays the chosen park info
 	public void getParkInfo() {
 		printHeading("Parks Info Screen");
-		out.println(admin.displayAllParks().get(chosenPark).getName());
-		out.println(admin.displayAllParks().get(chosenPark).getLocation());
-		out.println(admin.displayAllParks().get(chosenPark).getEstablishDate());
-		out.println(admin.displayAllParks().get(chosenPark).getArea());
-		out.println(admin.displayAllParks().get(chosenPark).getVisitors());
+		out.println(admin.displayAllParks().get(chosenPark).getName() + " National Park");
+		out.println("Location: " + admin.displayAllParks().get(chosenPark).getLocation());
+		out.println("Established: " + formattedDate(admin.displayAllParks().get(chosenPark).getEstablishDate()));
+		out.println("Area: " + admin.displayAllParks().get(chosenPark).getArea() + " sq km ");
+		out.println("Annual Visitors: " + admin.displayAllParks().get(chosenPark).getVisitors());
+		out.println();
 		out.println(admin.displayAllParks().get(chosenPark).getDescription());
 		out.flush();
 	}
@@ -107,19 +112,23 @@ public class Menu {
 	public Object getChoiceFromCampgroundMenu(Object[] choices) {
 		Object choice = null;
 		while (choice == null) {
+			campgrounds = admin.displayAllCampgrounds();
 			displayMainCampgroundMenu(choices);
 			choice = getChoiceFromUserInputFromCampgroundMenu(choices);
 		}
 		return choice;
 	}
+	
+	public void displayAllCampgrounds(Object choices) {
+		out.println(admin.displayAllCampgrounds());
+	}
+	
 
 	// actually deals with the user input
 	private Object getChoiceFromUserInputFromCampgroundMenu(Object[] choices) {
 		Object choice = null;
 		String userInput = in.nextLine();
 		try {
-
-			//chosenCampground = Integer.parseInt(userInput) - 1;
 
 			int chosenChoice = Integer.valueOf(userInput);
 			if (chosenChoice > 0 && chosenChoice <= campgrounds.size()) {
@@ -136,7 +145,7 @@ public class Menu {
 	}
 
 	public void getCampgroundInfo() {
-		for (Object campground : campgrounds) {
+		for (Campground campground : campgrounds) {
 			out.println(campground.toString());
 //			out.println(admin.displayAllCampgrounds().get(chosenCampground).getCampgroundId());
 		}
@@ -149,6 +158,31 @@ public class Menu {
 			System.out.print("-");
 		}
 		System.out.println();
+	}
+	
+	private String formattedDate(LocalDate date) {
+		String originalDate = date.toString();
+		SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat newFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Date formattedDashedDate = null;
+		try {
+			formattedDashedDate = originalFormat.parse(originalDate);
+		} catch (ParseException e) {
+		}
+		String correctlyFormattedDate = newFormat.format(formattedDashedDate).toString().replace("-", "/");
+		return correctlyFormattedDate;
+	}
+	
+	private String descriptionWraps() {
+		StringBuilder sb = new StringBuilder(s);
+
+		int i = 0;
+		while (i + 20 < sb.length() && (i = sb.lastIndexOf(" ", i + 20)) != -1) {
+		    sb.replace(i, i + 1, "\n");
+		}
+
+		System.out.println(sb.toString());
+		return "";
 	}
 
 }

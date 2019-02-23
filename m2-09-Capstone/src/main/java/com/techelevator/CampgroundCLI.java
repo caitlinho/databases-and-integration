@@ -31,23 +31,22 @@ public class CampgroundCLI {
 	}
 	
 	public void run() {
-		
 		menu.getChoiceFromMainParkMenu();
 		menu.getParkInfo();
 					
-			while(true) {
+//			while(true) {
 				String choice = String.valueOf(menu.getChoiceFromCampgroundMenu(CAMPGROUND_MENU_OPTIONS));
-				if (choice.equals(CAMPGROUND_MENU_OPTION_VIEW_CAMPGROUNDS)) {
-					menu.getCampgroundInfo();
-				
-				} else if(choice.equals(CAMPGROUND_MENU_OPTION_VIEW_SEARCH_FOR_RESERVATION)) {
-					
-				} else if(choice.equals(CAMPGROUND_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN)) {
-					
-				}
-			
+//				if (choice.equals(CAMPGROUND_MENU_OPTION_VIEW_CAMPGROUNDS)) {
+//					menu.getCampgroundInfo();
+//
+//				} else if(choice.equals(CAMPGROUND_MENU_OPTION_VIEW_SEARCH_FOR_RESERVATION)) {
+//					
+//				} else if(choice.equals(CAMPGROUND_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN)) {
+//					
+//				}
+//			
 	
-	}
+//	}
 		
 
 

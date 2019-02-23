@@ -118,7 +118,6 @@ public class JDBCSiteDAOIntegrationTest {
 		
 	}
 	
-	
 	private void clearSiteTable() {
 		String truncateSiteTableSql = "TRUNCATE Site CASCADE";
 		jdbcTemplate.update(truncateSiteTableSql);

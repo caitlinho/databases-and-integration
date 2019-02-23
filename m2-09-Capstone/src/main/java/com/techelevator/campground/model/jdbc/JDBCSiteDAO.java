@@ -1,5 +1,6 @@
 package com.techelevator.campground.model.jdbc;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +46,6 @@ public class JDBCSiteDAO implements SiteDAO {
 		return top5AvailableSites;
 	}
 	
-	
-	
 	private Site mapRowToSite(SqlRowSet results) {
 		Site site = new Site();
 		site.setSiteId(results.getLong("reservation_id"));
@@ -57,5 +56,8 @@ public class JDBCSiteDAO implements SiteDAO {
 		site.setMaxRVLength(results.getInt("max_rv_length"));
 		site.setUtilities(results.getBoolean("utilities"));
 		return site;
-	}	
+	}
+
+	
+	
 }
