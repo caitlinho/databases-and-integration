@@ -38,37 +38,6 @@ public class JDBCParkDAO implements ParkDAO {
 		return allParks;
 	}
 
-	@Override
-	public Park getParkInformation(String name) {
-
-		String selectSql = "SELECT park_id, name, location, establish_date, area, visitors, description FROM park "
-				+ "WHERE name = ?";
-
-		SqlRowSet results = jdbcTemplate.queryForRowSet(selectSql, name);
-
-		if (results.next()) {
-			return mapRowToPark(results);
-
-		}
-		return null;
-
-	}
-	
-	@Override
-	public Park getParkByParkId(Long parkId) {
-		String sqlPark = "SELECT park_id, name, location, establish_date, area, visitors, description "
-				+ "FROM park " 
-				+ "WHERE park_id = ?";
-
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlPark, parkId);
-
-		if (results.next()) {
-			return mapRowToPark(results);
-
-		}
-		return null;
-	}
-	
 
 	private Park mapRowToPark(SqlRowSet results) {
 		Park park = new Park();

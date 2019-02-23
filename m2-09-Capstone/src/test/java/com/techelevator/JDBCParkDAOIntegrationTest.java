@@ -62,17 +62,6 @@ public class JDBCParkDAOIntegrationTest {
 	}
 	
 	@Test
-	public void information_of_park_is_being_listed() {
-		
-		Park comparePark = getPark(insertedParkId, "testName", "testLocation", LocalDate.parse("2019-02-21"), 300, 4, "The description of the park selected.");
-		Park parks = dao.getParkInformation("testName");
-		
-		assertNotNull(parks);
-		assertEquals(comparePark, parks);
-
-	}
-	
-	@Test
 	public void all_parks_listed() {
 		int count = jdbcTemplate.queryForObject("SELECT count(*) FROM park", Integer.class);
 		List<Park> results = dao.getAllParks();

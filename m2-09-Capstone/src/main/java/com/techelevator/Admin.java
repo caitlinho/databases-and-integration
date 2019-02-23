@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import com.techelevator.campground.model.Campground;
 import com.techelevator.campground.model.CampgroundDAO;
 import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
@@ -40,26 +41,15 @@ public class Admin {
 		siteDAO = new JDBCSiteDAO(dataSource);
 	}
 	
-	public List<Park> displayAllParks() {
-		
-		List<Park> parks = parkDAO.getAllParks();
-		
-		return parks;
+	public List<Park> displayAllParks() {	
+		return parkDAO.getAllParks();
 	}
 	
-	public Park getChosenParkInfo(Park parkById) {
-		Park park = new Park();
-		Park parkInfo = parkDAO.getParkInformation(park.getName());
-		return parkInfo;
-		
+	public List<Campground> displayAllCampgrounds() {	
+		return campgroundDAO.getAllCampgrounds();
 	}
+
 	
-	public Park parkById(Long parkId) {
-		Park park = new Park();
-		Park selectedPark = parkDAO.getParkByParkId(park.getParkId());
-		Park parkInfo = parkDAO.getParkInformation(selectedPark.getName());
-		return parkInfo; 
-	}
 
 
 
