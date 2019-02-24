@@ -39,6 +39,25 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		
 		return campgrounds;
 	}
+	@Override
+	public List<Campground> getAllCampgroundsByParkId(int parkId) {
+
+		List<Campground> campgroundsByParkId = new ArrayList<Campground>();
+		
+		String selectSql = "SELECT campground_id, park_id, name, open_from_mm, open_to_mm, daily_fee FROM campground "
+						+ "WHERE park_id = ?";
+		
+		SqlRowSet results = jdbcTemplate.queryForRowSet(selectSql, parkId);
+		
+		while(results.next()) {
+			Campground p = mapRowToCampground(results);
+				campgroundsByParkId.add(p);
+		}
+		
+		return campgroundsByParkId;
+	}
+
+
 	
 	@Override
 	public BigDecimal getTotalCostOfReservation(long campgroundId, long lengthOfStay) {
@@ -70,5 +89,5 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		return totalCost;
 		}
 
-
+	
 }

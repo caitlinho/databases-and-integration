@@ -1,6 +1,7 @@
 package com.techelevator.campground.model.jdbc;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +26,20 @@ public class JDBCSiteDAO implements SiteDAO {
 	}
 	
 	@Override
-	public List<Site> getTop5AvailableSitesByDate(LocalDate fromDate, LocalDate toDate) {
+	public List<Site> getTop5AvailableSitesByDate(int campgroundId, LocalDate fromDate, LocalDate toDate) {
 		
 		List<Site> top5AvailableSites = new ArrayList<Site>();
 		
-		String top5SitesSql = "SELECT DISTINCT (*) FROM site \n " 
-				+ "JOIN campground ON site.campground_id = campground.campground_id\n "  
-				+ "WHERE site.campground_id = 2 AND site_id NOT IN (SELECT site.site_id FROM site\n " 
-				+ "JOIN reservation ON reservation.site_id = site.site_id\n " 
-				+ "WHERE ? > reservation.from_date AND ? < reservation.to_date)\n " 
-				+ "ORDER BY daily_fee\n " 
+		String top5SitesSql = "SELECT site.campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities " 
+				+ "FROM site " 
+				+ "JOIN campground ON site.campground_id = campground.campground_id "  
+				+ "WHERE site.campground_id = ? AND site_id NOT IN (SELECT site.site_id FROM site " 
+				+ "JOIN reservation ON reservation.site_id = site.site_id " 
+				+ "WHERE (? > reservation.from_date AND ? < reservation.to_date) OR (? > reservation.from_date AND ? < reservation.to_date)) " 
+				+ "ORDER BY daily_fee " 
 				+ "LIMIT 5";
 		
-		SqlRowSet results = jdbcTemplate.queryForRowSet(top5SitesSql, fromDate, toDate);
+		SqlRowSet results = jdbcTemplate.queryForRowSet(top5SitesSql, campgroundId, fromDate, toDate, fromDate, toDate);
 		
 		while(results.next()) {
 			Site site = mapRowToSite(results);

@@ -17,6 +17,12 @@ public class CampgroundCLI {
 	private static final String[] CAMPGROUND_MENU_OPTIONS = {CAMPGROUND_MENU_OPTION_VIEW_CAMPGROUNDS,
 																		CAMPGROUND_MENU_OPTION_VIEW_SEARCH_FOR_RESERVATION,
 																		CAMPGROUND_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN};
+	
+	private static final String RESERVATION_MENU_OPTION_SEARCH_FOR_AVAILABLE_RESERVATION = "Search for Available Reservation";
+	private static final String RESERVATION_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN= "Return to Previous Screen";
+	private static final String[] RESERVATION_MENU_OPTIONS = {RESERVATION_MENU_OPTION_SEARCH_FOR_AVAILABLE_RESERVATION,
+															RESERVATION_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN};
+	
 	private static Menu menu;
 	
 
@@ -34,19 +40,25 @@ public class CampgroundCLI {
 		menu.getChoiceFromMainParkMenu();
 		menu.getParkInfo();
 					
-//			while(true) {
+			while(true) {
 				String choice = String.valueOf(menu.getChoiceFromCampgroundMenu(CAMPGROUND_MENU_OPTIONS));
+//				break;
 //				if (choice.equals(CAMPGROUND_MENU_OPTION_VIEW_CAMPGROUNDS)) {
-//					menu.getCampgroundInfo();
-//
+//					menu.get;
+//						
 //				} else if(choice.equals(CAMPGROUND_MENU_OPTION_VIEW_SEARCH_FOR_RESERVATION)) {
 //					
 //				} else if(choice.equals(CAMPGROUND_MENU_OPTION_VIEW_RETURN_TO_PREVIOUS_SCREEN)) {
 //					
-//				}
-//			
+//			}
+				while(true) {
+					String choice2 = String.valueOf(menu.getChoiceFromReservationMenu(RESERVATION_MENU_OPTIONS));
+					//break;
+				}	
+					
+				
 	
-//	}
+	}
 		
 
 

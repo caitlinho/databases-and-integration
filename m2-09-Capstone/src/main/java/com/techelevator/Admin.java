@@ -1,5 +1,7 @@
 package com.techelevator;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -11,6 +13,7 @@ import com.techelevator.campground.model.CampgroundDAO;
 import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
 import com.techelevator.campground.model.ReservationDAO;
+import com.techelevator.campground.model.Site;
 import com.techelevator.campground.model.SiteDAO;
 import com.techelevator.campground.model.jdbc.JDBCCampgroundDAO;
 import com.techelevator.campground.model.jdbc.JDBCParkDAO;
@@ -49,8 +52,12 @@ public class Admin {
 		return campgroundDAO.getAllCampgrounds();
 	}
 
+	public List<Campground> displayCampgroundByParkId(int parkId) {
+		return campgroundDAO.getAllCampgroundsByParkId(parkId);
+	}
 	
-
-
+	public List<Site> getTop5AvailableSitesByDate(int campgroundId, LocalDate fromDate, LocalDate toDate) {
+		return siteDAO.getTop5AvailableSitesByDate(campgroundId, fromDate, toDate);
+	}
 
 }

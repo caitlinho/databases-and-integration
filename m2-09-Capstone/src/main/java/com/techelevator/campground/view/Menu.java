@@ -7,6 +7,7 @@ import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,6 +18,7 @@ import com.techelevator.Admin;
 import com.techelevator.CampgroundCLI;
 import com.techelevator.campground.model.Campground;
 import com.techelevator.campground.model.Park;
+import com.techelevator.campground.model.Site;
 
 public class Menu {
 
@@ -28,6 +30,11 @@ public class Menu {
 	private Admin admin = new Admin();
 	private List<Park> parks = admin.displayAllParks();
 	private List<Campground> campgrounds;
+	private List<Site> siteChosen;
+	private List<Site> getTop5AvailableSitesByDate;
+	private static LocalDate arrivalDate = null;
+	private static LocalDate departureDate = null;
+	private static int bookingCampground;
 
 	public Menu(InputStream input, OutputStream output) {
 		this.out = new PrintWriter(output);
@@ -51,6 +58,7 @@ public class Menu {
 		try {
 
 			chosenPark = Integer.parseInt(userInput) - 1;
+			chosenCampground = chosenPark + 1;
 
 			if (userInput == "Q") {
 				System.exit(0);
@@ -86,13 +94,14 @@ public class Menu {
 	// displays the chosen park info
 	public void getParkInfo() {
 		printHeading("Parks Info Screen");
-		out.println(admin.displayAllParks().get(chosenPark).getName() + " National Park");
-		out.println("Location: " + admin.displayAllParks().get(chosenPark).getLocation());
-		out.println("Established: " + formattedDate(admin.displayAllParks().get(chosenPark).getEstablishDate()));
-		out.println("Area: " + admin.displayAllParks().get(chosenPark).getArea() + " sq km ");
-		out.println("Annual Visitors: " + admin.displayAllParks().get(chosenPark).getVisitors());
+		out.println(admin.displayAllParks().get(chosenPark).getName() + " National Park ");
+		out.printf("%-17s %-20s \n", "Location: ", admin.displayAllParks().get(chosenPark).getLocation());
+		out.printf("%-17s %-2s \n", "Established: ",
+				formattedDate(admin.displayAllParks().get(chosenPark).getEstablishDate()));
+		out.printf("%-17s %-2d %-5s \n", "Area: ", admin.displayAllParks().get(chosenPark).getArea(), " sq km ");
+		out.printf("%-17s %-2d \n", "Annual Visitors: ", admin.displayAllParks().get(chosenPark).getVisitors());
 		out.println();
-		out.println(admin.displayAllParks().get(chosenPark).getDescription());
+		out.println(descriptionWraps(admin.displayAllParks().get(chosenPark).getDescription()));
 		out.flush();
 	}
 
@@ -116,13 +125,13 @@ public class Menu {
 			displayMainCampgroundMenu(choices);
 			choice = getChoiceFromUserInputFromCampgroundMenu(choices);
 		}
+		getCampgroundInfo(choices);
 		return choice;
 	}
-	
+
 	public void displayAllCampgrounds(Object choices) {
 		out.println(admin.displayAllCampgrounds());
 	}
-	
 
 	// actually deals with the user input
 	private Object getChoiceFromUserInputFromCampgroundMenu(Object[] choices) {
@@ -131,8 +140,8 @@ public class Menu {
 		try {
 
 			int chosenChoice = Integer.valueOf(userInput);
-			if (chosenChoice > 0 && chosenChoice <= campgrounds.size()) {
-				choice = campgrounds.get(chosenChoice -1);
+			if (chosenChoice >= 0 && chosenChoice <= campgrounds.size()) {
+				choice = campgrounds.get(chosenChoice - 1);
 			}
 		} catch (NumberFormatException e) {
 			// eat the exception, an error message will be displayed below since choice will
@@ -144,13 +153,149 @@ public class Menu {
 		return choice;
 	}
 
-	public void getCampgroundInfo() {
-		for (Campground campground : campgrounds) {
-			out.println(campground.toString());
-//			out.println(admin.displayAllCampgrounds().get(chosenCampground).getCampgroundId());
+	public void getCampgroundInfo(Object[] choices) {
+		List<Campground> campgroundsByParkId = admin.displayCampgroundByParkId(chosenCampground);
+		printHeading("Park Campgrounds Screen");
+		for (Campground campground : campgroundsByParkId) {
+			System.out.println(
+					campground.getCampgroundId() + "    " + campground.getName() + "  " + campground.getOpenFromMonth()
+							+ "   " + campground.getOpenToMonth() + "  " + campground.getDailyFee());
+		}
+		out.flush();
+
+	}
+
+	public Object getChoiceFromReservationMenu(Object[] choices) {
+		Object choice = null;
+		while (choice == null) {
+			campgrounds = admin.displayAllCampgrounds();
+			displayMainCampgroundMenu(choices);
+			choice = getChoiceFromUserInputFromReservationMenu(choices);
+		}
+		takeInCampgroundReservation(choices);
+		resultsMatchingCriteria();
+		return choice;
+	}
+
+	private Object getChoiceFromUserInputFromReservationMenu(Object[] choices) {
+		Object choice = null;
+		String userInput = in.nextLine();
+		try {
+
+			int chosenChoice = Integer.valueOf(userInput);
+			if (chosenChoice >= 0 && chosenChoice < 3) {
+				choice = (chosenChoice - 1);
+			}
+		} catch (NumberFormatException e) {
+			// eat the exception, an error message will be displayed below since choice will
+			// be null
+		}
+		if (choice == null) {
+			out.println("\n*** " + userInput + " is not a valid option ***\n");
+		}
+		return choice;
+	}
+
+	public void takeInCampgroundReservation(Object[] choices) {
+		Object choice = null;
+		while (choice == null) {
+			chooseCampgroundOrQuit();
+			reservationArrivalDate();
+			reservationDepartureDate();
+			break;
+		}
+
+	}
+
+	// Will need to add try catch for incorrect dates entered
+
+	private int chooseCampgroundOrQuit() {
+		boolean waitingForInput = true;
+		int userCampground = 0;
+
+		while (waitingForInput) {
+			System.out.println("Which campground (enter 0 to cancel)?");
+			String userInput = in.nextLine();
+
+			try {
+				userCampground = Integer.parseInt(userInput);
+				bookingCampground = userCampground;
+				if (bookingCampground == 0) {
+					System.exit(0);
+				} else {
+					waitingForInput = false;
+				}
+			} catch (Exception numberFormatException) {
+				System.out.println("Invalid input, please try again");
+			}
+		}
+
+		return bookingCampground;
+
+	}
+
+	private LocalDate reservationArrivalDate() {
+		boolean waitingForInput = true;
+		LocalDate userArrivalDate = null;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+		while (waitingForInput) {
+			System.out.println("What is the arrival date?");
+			String userInput = in.nextLine();
+			
+			try {
+				userArrivalDate = LocalDate.parse(userInput, formatter);
+				arrivalDate = userArrivalDate;
+				waitingForInput = false;
+			} catch (Exception dateTimeParseException) {
+				System.out.println("Arrival date was entered incorrectedly, please try again.");
+			}
+		}
+		return userArrivalDate;
+
+	}
+
+	private LocalDate reservationDepartureDate() {
+		boolean waitingForInput = true;
+		LocalDate userDepartureDate = null;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+		while (waitingForInput) {
+			System.out.println("What is the departure date?");
+			String userInput = in.nextLine();
+
+			try {
+				userDepartureDate = LocalDate.parse(userInput, formatter);
+
+				if (userDepartureDate.isBefore(arrivalDate)) {
+					System.out.println("Departure date must be after arrival date.");
+				} else {
+					departureDate = userDepartureDate;
+					waitingForInput = false;
+				}
+
+			} catch (Exception dateTimeParseException) {
+				System.out.println("Departure date was entered incorrectedly, please try again.");
+			}
+		}
+		return userDepartureDate;
+
+	}
+	
+	private void resultsMatchingCriteria() {
+		siteChosen = admin.getTop5AvailableSitesByDate(bookingCampground, arrivalDate, departureDate);
+		printHeading("Results Matching Your Search Criteria");
+		for (Site site : siteChosen) {
+			out.print(site.getSiteNumber() + "  " + site.getMaxOccupancy() + "   " + site.isAccessible() 
+			+ "   " + site.getMaxRVLength() + "  " + site.isUtilities() + "   ");
+			out.println();
 		}
 		out.flush();
 	}
+	
+	
+	
+	//ChronoUnit.DAYS.between(arrivalDate, departureDate);
 
 	private void printHeading(String headingText) {
 		System.out.println("\n" + headingText);
@@ -159,7 +304,7 @@ public class Menu {
 		}
 		System.out.println();
 	}
-	
+
 	private String formattedDate(LocalDate date) {
 		String originalDate = date.toString();
 		SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -173,16 +318,15 @@ public class Menu {
 		return correctlyFormattedDate;
 	}
 	
-	private String descriptionWraps() {
-		StringBuilder sb = new StringBuilder(s);
+	private String descriptionWraps(String description) {
 
+		StringBuilder sb = new StringBuilder(description);
 		int i = 0;
-		while (i + 20 < sb.length() && (i = sb.lastIndexOf(" ", i + 20)) != -1) {
-		    sb.replace(i, i + 1, "\n");
+		while (i + 90 < sb.length() && (i = sb.lastIndexOf(" ", i + 90)) != -1) {
+			sb.replace(i, i + 1, "\n");
 		}
 
-		System.out.println(sb.toString());
-		return "";
+		return sb.toString();
 	}
 
 }

@@ -11,4 +11,7 @@ public interface CampgroundDAO {
 	//Displaying cost
 	public BigDecimal getTotalCostOfReservation(long campgroundId, long lengthOfStay);
 	
+	//Displaying list of campground in chosen park id
+	public List<Campground> getAllCampgroundsByParkId(int parkId); 
+	
 }
