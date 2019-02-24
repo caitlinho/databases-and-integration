@@ -286,8 +286,11 @@ public class Menu {
 		siteChosen = admin.getTop5AvailableSitesByDate(bookingCampground, arrivalDate, departureDate);
 		printHeading("Results Matching Your Search Criteria");
 		for (Site site : siteChosen) {
-			out.print(site.getSiteNumber() + "  " + site.getMaxOccupancy() + "   " + site.isAccessible() 
-			+ "   " + site.getMaxRVLength() + "  " + site.isUtilities() + "   ");
+			String utilities = site.isUtilities() ? "Yes" : "N/A";
+			String accessible = site.isAccessible() ? "Yes" : "No";
+			
+			out.print(site.getSiteNumber() + "  " + site.getMaxOccupancy() + "   " + accessible 
+			+ "   " + site.getMaxRVLength() + "  " + utilities + "   " + (admin.displayAllCampgrounds().get(bookingCampground).getDailyFee()));
 			out.println();
 		}
 		out.flush();

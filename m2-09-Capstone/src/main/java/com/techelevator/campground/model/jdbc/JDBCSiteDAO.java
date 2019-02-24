@@ -30,7 +30,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		
 		List<Site> top5AvailableSites = new ArrayList<Site>();
 		
-		String top5SitesSql = "SELECT site.campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities " 
+		String top5SitesSql = "SELECT site_id, site.campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities " 
 				+ "FROM site " 
 				+ "JOIN campground ON site.campground_id = campground.campground_id "  
 				+ "WHERE site.campground_id = ? AND site_id NOT IN (SELECT site.site_id FROM site " 
@@ -50,7 +50,7 @@ public class JDBCSiteDAO implements SiteDAO {
 	
 	private Site mapRowToSite(SqlRowSet results) {
 		Site site = new Site();
-		site.setSiteId(results.getLong("reservation_id"));
+		site.setSiteId(results.getLong("site_id"));
 		site.setCampgroundId(results.getInt("campground_id"));
 		site.setSiteNumber(results.getInt("site_number"));
 		site.setMaxOccupancy(results.getInt("max_occupancy"));
