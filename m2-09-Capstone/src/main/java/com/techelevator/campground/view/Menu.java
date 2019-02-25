@@ -47,11 +47,11 @@ public class Menu {
 	}
 
 	// public method for cli to call which park user chooses
-	public Object getChoiceFromMainParkMenu() {
-		Object choice = null;
+	public Integer getChoiceFromMainParkMenu() {
+		Integer choice = null;
 		while (choice == null) {
 			displayMainParkMenuOptions(parks);
-			choice = getChoiceFromUserInputFromMainParkMenu();
+			choice = (Integer)(getChoiceFromUserInputFromMainParkMenu();
 		}
 		return choice;
 	}

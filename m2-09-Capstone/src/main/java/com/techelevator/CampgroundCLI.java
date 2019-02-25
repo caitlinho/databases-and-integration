@@ -1,5 +1,7 @@
 package com.techelevator;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 
@@ -37,7 +39,9 @@ public class CampgroundCLI {
 	}
 	
 	public void run() {
-		menu.getChoiceFromMainParkMenu();
+		//List<Park> parks = Admin.getAllParks();
+		
+		int selectedParkNumber = menu.getChoiceFromMainParkMenu();
 		menu.getParkInfo();
 					
 			while(true) {
