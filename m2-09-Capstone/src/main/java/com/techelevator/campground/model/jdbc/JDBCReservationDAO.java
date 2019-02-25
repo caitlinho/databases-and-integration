@@ -22,23 +22,19 @@ public class JDBCReservationDAO implements ReservationDAO {
 	}
 	
 	@Override
-	public Long addReservation(Reservation reservation) {
+	public int addReservation(int siteId, String name, LocalDate fromDate, LocalDate toDate, LocalDate createDate) {
 		String returnIdSql = "INSERT INTO reservation (site_id, name, from_date, to_date, create_date) "  
 				+ "VALUES (?, ?, ?, ?, ?) " 
 				+ "RETURNING reservation_id"; 
 		
-		Long returnReservationId = jdbcTemplate.queryForObject(returnIdSql, Long.class, 
-				reservation.getSiteId(),
-				reservation.getName(),
-				reservation.getFromDate(),
-				reservation.getToDate(),
-				reservation.getCreateDate());
+		int returnReservationId = jdbcTemplate.queryForObject(returnIdSql, Integer.class, siteId, name, fromDate, toDate, createDate);
+
 		return returnReservationId;
 	}
-	
+		
 
 	@Override
-	public Reservation getActiveReservation(Long reservationId) {
+	public Reservation getActiveReservation(int reservationId) {
 		
 		String sqlReservation = "SELECT reservation_id, site_id, name, from_date, to_date, create_date "
 				+ "FROM reservation " 
@@ -56,7 +52,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 	}
 	//DELETE
 	@Override
-	public void cancelReservation(Long reservationId) {
+	public void cancelReservation(int reservationId) {
 		String sqlCancelReservation = "DELETE FROM reservation "
 				+ "WHERE reservation_id = ?";
 		
@@ -65,8 +61,8 @@ public class JDBCReservationDAO implements ReservationDAO {
 	
 	private Reservation mapRowToReservation(SqlRowSet results) {
 		Reservation reservation = new Reservation();
-		reservation.setReservationId(results.getLong("reservation_id"));
-		reservation.setSiteId(results.getLong("site_id"));
+		reservation.setReservationId(results.getInt("reservation_id"));
+		reservation.setSiteId(results.getInt("site_id"));
 		reservation.setName(results.getString("name"));
 		reservation.setFromDate(results.getDate("from_date").toLocalDate());
 		reservation.setToDate(results.getDate("to_date").toLocalDate());

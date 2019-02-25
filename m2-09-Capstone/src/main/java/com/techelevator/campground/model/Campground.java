@@ -4,18 +4,18 @@ import java.math.BigDecimal;
 
 public class Campground {
 	
-	private Long campgroundId;
+	private int campgroundId;
 	private Long parkId;
 	private String name;
 	private String openFromMonth;
 	private String openToMonth;
 	private BigDecimal dailyFee;
 	
-	public Long getCampgroundId() {
+	public int getCampgroundId() {
 		return campgroundId;
 	}
 	
-	public void setCampgroundId(Long campgroundId) {
+	public void setCampgroundId(int campgroundId) {
 		this.campgroundId = campgroundId;
 	}
 	

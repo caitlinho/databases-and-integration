@@ -53,7 +53,7 @@ public class CampgroundCLI {
 //			}
 				while(true) {
 					String choice2 = String.valueOf(menu.getChoiceFromReservationMenu(RESERVATION_MENU_OPTIONS));
-					//break;
+					break;
 				}	
 					
 				

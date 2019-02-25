@@ -12,6 +12,7 @@ import com.techelevator.campground.model.Campground;
 import com.techelevator.campground.model.CampgroundDAO;
 import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
+import com.techelevator.campground.model.Reservation;
 import com.techelevator.campground.model.ReservationDAO;
 import com.techelevator.campground.model.Site;
 import com.techelevator.campground.model.SiteDAO;
@@ -59,5 +60,11 @@ public class Admin {
 	public List<Site> getTop5AvailableSitesByDate(int campgroundId, LocalDate fromDate, LocalDate toDate) {
 		return siteDAO.getTop5AvailableSitesByDate(campgroundId, fromDate, toDate);
 	}
+	
+	public int addReservation(int siteId, String name, LocalDate fromDate, LocalDate toDate, LocalDate createDate) {
+		return reservationDAO.addReservation(siteId, name, fromDate, toDate, createDate);
+		
+	}
+	
 
 }

@@ -22,7 +22,7 @@ import com.techelevator.campground.model.jdbc.JDBCSiteDAO;
 
 public class JDBCSiteDAOIntegrationTest {
 
-	private Long testSiteId;
+	private int testSiteId;
 	private int testCampgroundId = 1;
 	private int testSiteNumber = 2;
 	private int testMaxOccupancy = 3;
@@ -65,7 +65,7 @@ public class JDBCSiteDAOIntegrationTest {
 				+ "VALUES (?, ?, ?, ?, ?, ?) "
 				+ "RETURNING Site_id";
 		
-		testSiteId = jdbcTemplate.queryForObject(createSiteSql, Long.class, 
+		testSiteId = jdbcTemplate.queryForObject(createSiteSql, Integer.class, 
 				testCampgroundId, testSiteNumber, testMaxOccupancy, testAccessible, testMaxRVLength, testUtilities);
 	}
 
@@ -123,7 +123,7 @@ public class JDBCSiteDAOIntegrationTest {
 		jdbcTemplate.update(truncateSiteTableSql);
 	}
 
-	private Site getSite(Long siteId, int campgroundId, int siteNumber, int maxOccupancy, Boolean accessible, int maxRVLength, boolean utilities) {
+	private Site getSite(int siteId, int campgroundId, int siteNumber, int maxOccupancy, Boolean accessible, int maxRVLength, boolean utilities) {
 		Site testSite = new Site();
 		
 		testSite.setSiteId(siteId);
@@ -136,7 +136,7 @@ public class JDBCSiteDAOIntegrationTest {
 		return testSite;
 	}
 		
-	private Reservation getReservation(Long siteId, String name, LocalDate fromDate, LocalDate toDate, LocalDate createDate) {
+	private Reservation getReservation(int siteId, String name, LocalDate fromDate, LocalDate toDate, LocalDate createDate) {
 		Reservation testReservation = new Reservation();
 		
 		testReservation.setSiteId(siteId);
@@ -149,8 +149,8 @@ public class JDBCSiteDAOIntegrationTest {
 	
 	private Reservation mapRowToReservation(SqlRowSet results) {
 		Reservation reservation = new Reservation();
-		reservation.setReservationId(results.getLong("reservation_id"));
-		reservation.setSiteId(results.getLong("site_id"));
+		reservation.setReservationId(results.getInt("reservation_id"));
+		reservation.setSiteId(results.getInt("site_id"));
 		reservation.setName(results.getString("name"));
 		reservation.setFromDate(results.getDate("from_date").toLocalDate());
 		reservation.setToDate(results.getDate("to_date").toLocalDate());
@@ -160,7 +160,7 @@ public class JDBCSiteDAOIntegrationTest {
 	
 	private Site mapRowToSite(SqlRowSet results) {
 		Site site = new Site();
-		site.setSiteId(results.getLong("reservation_id"));
+		site.setSiteId(results.getInt("reservation_id"));
 		site.setCampgroundId(results.getInt("campground_id"));
 		site.setSiteNumber(results.getInt("site_number"));
 		site.setMaxOccupancy(results.getInt("max_occupancy"));

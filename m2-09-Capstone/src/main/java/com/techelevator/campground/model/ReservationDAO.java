@@ -6,13 +6,15 @@ import java.util.List;
 public interface ReservationDAO {
 	
 	// Returns confirmation id to user 
-	public Long addReservation(Reservation reservation);
+	public int addReservation(int siteId, String name, LocalDate fromDate, LocalDate toDate, LocalDate createDate);
 	
 	//Shows Active Reservations
-	public Reservation getActiveReservation(Long reservationId);
+	public Reservation getActiveReservation(int reservationId);
 	
 	//Cancels Reservation and deletes form db
-	public void cancelReservation(Long reservationId);
+	public void cancelReservation(int reservationId);
+
+	
 
 	
 	

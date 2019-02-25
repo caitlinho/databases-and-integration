@@ -23,7 +23,7 @@ import com.techelevator.campground.model.jdbc.JDBCCampgroundDAO;
 public class JDBCCampgroundIntegrationTest {
 	
 
-	private Long insertedCampgroundId;
+	private int insertedCampgroundId;
 	private static SingleConnectionDataSource dataSource;
 	private JDBCCampgroundDAO dao;
 	private JdbcTemplate jdbcTemplate;
@@ -73,7 +73,7 @@ public class JDBCCampgroundIntegrationTest {
 		jdbcTemplate.update(truncateCampgroundTableSql);
 	}
 	
-	private Campground getCampground(Long CampgroundId, Long parkId, String name, String openFromMonth, String openToMonth, BigDecimal dailyFee) {
+	private Campground getCampground(int CampgroundId, Long parkId, String name, String openFromMonth, String openToMonth, BigDecimal dailyFee) {
 		Campground testCampground = new Campground();
 		testCampground.setCampgroundId(CampgroundId);
 		testCampground.setParkId(parkId);

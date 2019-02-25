@@ -18,6 +18,8 @@ import com.techelevator.Admin;
 import com.techelevator.CampgroundCLI;
 import com.techelevator.campground.model.Campground;
 import com.techelevator.campground.model.Park;
+import com.techelevator.campground.model.Reservation;
+import com.techelevator.campground.model.ReservationDAO;
 import com.techelevator.campground.model.Site;
 
 public class Menu {
@@ -35,6 +37,9 @@ public class Menu {
 	private static LocalDate arrivalDate = null;
 	private static LocalDate departureDate = null;
 	private static int bookingCampground;
+	private static int databaseCampground = 0;
+	private static int chosenSiteNumber;
+	private String bookedName;
 
 	public Menu(InputStream input, OutputStream output) {
 		this.out = new PrintWriter(output);
@@ -174,6 +179,9 @@ public class Menu {
 		}
 		takeInCampgroundReservation(choices);
 		resultsMatchingCriteria();
+		bookReservationSite();
+		bookReservationUnderName();
+		createReservation();
 		return choice;
 	}
 
@@ -185,6 +193,7 @@ public class Menu {
 			int chosenChoice = Integer.valueOf(userInput);
 			if (chosenChoice >= 0 && chosenChoice < 3) {
 				choice = (chosenChoice - 1);
+				databaseCampground = campgrounds.get(chosenChoice).getCampgroundId();
 			}
 		} catch (NumberFormatException e) {
 			// eat the exception, an error message will be displayed below since choice will
@@ -242,7 +251,7 @@ public class Menu {
 		while (waitingForInput) {
 			System.out.println("What is the arrival date?");
 			String userInput = in.nextLine();
-			
+
 			try {
 				userArrivalDate = LocalDate.parse(userInput, formatter);
 				arrivalDate = userArrivalDate;
@@ -281,24 +290,64 @@ public class Menu {
 		return userDepartureDate;
 
 	}
-	
+
 	private void resultsMatchingCriteria() {
 		siteChosen = admin.getTop5AvailableSitesByDate(bookingCampground, arrivalDate, departureDate);
 		printHeading("Results Matching Your Search Criteria");
 		for (Site site : siteChosen) {
 			String utilities = site.isUtilities() ? "Yes" : "N/A";
 			String accessible = site.isAccessible() ? "Yes" : "No";
-			
-			out.print(site.getSiteNumber() + "  " + site.getMaxOccupancy() + "   " + accessible 
-			+ "   " + site.getMaxRVLength() + "  " + utilities + "   " + (admin.displayAllCampgrounds().get(bookingCampground).getDailyFee()));
+
+			out.print(site.getSiteNumber() + "  " + site.getMaxOccupancy() + "   " + accessible + "   "
+					+ site.getMaxRVLength() + "  " + utilities + "   "
+					+ (admin.displayAllCampgrounds().get(databaseCampground).getDailyFee()));
 			out.println();
 		}
+		out.println();
 		out.flush();
 	}
+
+	private int bookReservationSite() {
+		boolean waitingForInput = true;
+
+		while (waitingForInput) {
+			System.out.println("Which site should be reserved? ");
+			int userReserveSite = in.nextInt();
+
+			try {
+				chosenSiteNumber = userReserveSite;
+				waitingForInput = false;
+			} catch (Exception numberFormatException) {
+				System.out.println("Invalid input, please try again");
+			}
+		}
+		return chosenSiteNumber;
+
+	}
+
+	private String bookReservationUnderName() {
+		boolean waitingForInput = true;
+		
+		String userReservationName = null;
+		while (waitingForInput) {
+			System.out.println("What name should the reservation be under? ");
+			userReservationName = in.next();
+			bookedName = userReservationName;
+			waitingForInput = false;
+		}
+		
+		return bookedName;
+
+	}
 	
+	private void createReservation() {
+		out.println("Your reservation confirmation id is: " + admin.addReservation(chosenSiteNumber, bookedName, arrivalDate, departureDate, LocalDate.now()));
+		out.flush();
+		System.exit(0);
+
+	}
 	
-	
-	//ChronoUnit.DAYS.between(arrivalDate, departureDate);
+	// ChronoUnit.DAYS.between(arrivalDate, departureDate);
 
 	private void printHeading(String headingText) {
 		System.out.println("\n" + headingText);
@@ -320,7 +369,7 @@ public class Menu {
 		String correctlyFormattedDate = newFormat.format(formattedDashedDate).toString().replace("-", "/");
 		return correctlyFormattedDate;
 	}
-	
+
 	private String descriptionWraps(String description) {
 
 		StringBuilder sb = new StringBuilder(description);

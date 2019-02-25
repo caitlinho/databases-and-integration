@@ -3,22 +3,22 @@ package com.techelevator.campground.model;
 import java.time.LocalDate;
 
 public class Reservation {
-	private Long reservationId;
-	private Long siteId;
+	private int reservationId;
+	private int siteId;
 	private String name;
 	private LocalDate fromDate;
 	private LocalDate toDate;
 	private LocalDate createDate;
-	public Long getReservationId() {
+	public int getReservationId() {
 		return reservationId;
 	}
-	public void setReservationId(Long reservationId) {
+	public void setReservationId(int reservationId) {
 		this.reservationId = reservationId;
 	}
-	public Long getSiteId() {
+	public int getSiteId() {
 		return siteId;
 	}
-	public void setSiteId(Long siteId) {
+	public void setSiteId(int siteId) {
 		this.siteId = siteId;
 	}
 	public String getName() {
@@ -52,8 +52,8 @@ public class Reservation {
 		result = prime * result + ((createDate == null) ? 0 : createDate.hashCode());
 		result = prime * result + ((fromDate == null) ? 0 : fromDate.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((reservationId == null) ? 0 : reservationId.hashCode());
-		result = prime * result + ((siteId == null) ? 0 : siteId.hashCode());
+		result = prime * result + reservationId;
+		result = prime * result + siteId;
 		result = prime * result + ((toDate == null) ? 0 : toDate.hashCode());
 		return result;
 	}
@@ -81,15 +81,9 @@ public class Reservation {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (reservationId == null) {
-			if (other.reservationId != null)
-				return false;
-		} else if (!reservationId.equals(other.reservationId))
+		if (reservationId != other.reservationId)
 			return false;
-		if (siteId == null) {
-			if (other.siteId != null)
-				return false;
-		} else if (!siteId.equals(other.siteId))
+		if (siteId != other.siteId)
 			return false;
 		if (toDate == null) {
 			if (other.toDate != null)
@@ -98,6 +92,7 @@ public class Reservation {
 			return false;
 		return true;
 	}
+	
 	
 	
 	

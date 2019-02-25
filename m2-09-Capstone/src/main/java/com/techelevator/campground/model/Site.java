@@ -2,7 +2,7 @@ package com.techelevator.campground.model;
 
 public class Site {
 
-	private Long siteId;
+	private int siteId;
 	private int campgroundId;
 	private int siteNumber;
 	private int maxOccupancy;
@@ -10,12 +10,12 @@ public class Site {
 	private int maxRVLength;
 	private boolean utilities;
 	
-	public Long getSiteId() {
+	public int getSiteId() {
 		return siteId;
 	}
 	
-	public void setSiteId(Long siteId) {
-		this.siteId = siteId;
+	public void setSiteId(int siteId2) {
+		this.siteId = siteId2;
 	}
 	
 	public int getCampgroundId() {
